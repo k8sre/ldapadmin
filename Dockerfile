@@ -2,12 +2,12 @@ FROM hub-mirror.c.163.com/library/golang:1.13.10 AS builder
 WORKDIR /go/src/k8sre/ldapadmin
 COPY . ./
 RUN export GOPROXY=https://mirrors.aliyun.com/goproxy/ && \
-    make build
+    go build -o output/bin/ldapadmin
 
 
 FROM registry-vpc.cn-zhangjiakou.aliyuncs.com/k8sre/alpine:3.11-glibc
 
-RUN apk update                             && \
+RUN apk update   && \
     apk upgrade
 
 WORKDIR /opt/ldapadmin
