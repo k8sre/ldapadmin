@@ -1,0 +1,96 @@
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: phpldapadmin
+spec:
+  rules:
+  - host: phpldapadmin.k8sre.com
+    http:
+      paths:
+      - backend:
+          serviceName: phpldapadmin
+          servicePort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: phpldapadmin
+  name: phpldapadmin
+spec:
+  ports:
+    - name: web
+      port: 80
+    - name: web-ssl
+      port: 443
+  selector:
+    app: phpldapadmin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpldapadmin
+  labels:
+    app: phpldapadmin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpldapadmin
+  template:
+    metadata:
+      labels:
+        app: phpldapadmin
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - 172.16.100.216
+      containers:
+        - name: phpldapadmin
+          image: osixia/phpldapadmin:0.9.0
+          volumeMounts:
+            - name: phpldapadmin-certs
+              mountPath: /container/service/phpldapadmin/assets/apache2/certs
+            - name: ldap-client-certs
+              mountPath: /container/service/ldap-client/assets/certs
+          ports:
+            - containerPort: 443
+          env:
+            - name: PHPLDAPADMIN_LDAP_HOSTS
+              value: "#PYTHON2BASH:[{'ldap.k8sre.com': [{'server': [{'tls': 'true'}]}]}]"
+            - name: PHPLDAPADMIN_SERVER_ADMIN
+              value: "webmaster@k8sre.com"
+            - name: PHPLDAPADMIN_SERVER_PATH
+              value: "/phpldapadmin"
+            - name: PHPLDAPADMIN_HTTPS
+              value: "true"
+            - name: PHPLDAPADMIN_HTTPS_CRT_FILENAME
+              value: "cert.crt"
+            - name: PHPLDAPADMIN_HTTPS_KEY_FILENAME
+              value: "cert.key"
+            - name: PHPLDAPADMIN_HTTPS_CA_CRT_FILENAME
+              value: "ca.crt"
+            - name: PHPLDAPADMIN_LDAP_CLIENT_TLS
+              value: "true"
+            - name: PHPLDAPADMIN_LDAP_CLIENT_TLS_REQCERT
+              value: "demand"
+            - name: PHPLDAPADMIN_LDAP_CLIENT_TLS_CRT_FILENAME
+              value: "cert.crt"
+            - name: PHPLDAPADMIN_LDAP_CLIENT_TLS_KEY_FILENAME
+              value: "cert.key"
+            - name: PHPLDAPADMIN_LDAP_CLIENT_TLS_CA_CRT_FILENAME
+              value: "ca.crt"
+      volumes:
+        - name: phpldapadmin-certs
+          hostPath:
+            path: "/data/phpldapadmin/ssl/"
+        - name: ldap-client-certs
+          hostPath:
+            path: "/data/phpldapadmin/ldap-client-certs/"

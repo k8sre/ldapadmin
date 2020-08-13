@@ -1,0 +1,31 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: ldapadmin
+  labels:
+    app: ldapadmin
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ldapadmin
+  template:
+    metadata:
+      labels:
+        app: ldapadmin
+    spec:
+      containers:
+        - name: ldap
+          image: registry-vpc.cn-zhangjiakou.aliyuncs.com/k8sre/ldapadmin:0.4
+          ports:
+            - containerPort: 8080
+              name: web
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/ldapadmin/conf/
+      volumes:
+      - name: config-volume
+        configMap:
+          name: app

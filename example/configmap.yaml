@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app
+data:
+  app.conf: |
+    appname = ldapadmin
+    httpport = 8080
+    runmode = pod
+
+    [pod]
+    address = ldap:389
+    adminDN = cn=admin,dc=k8sre,dc=com
+    adminPasswd = admin
+    baseDn = dc=k8sre,dc=com
+
+    host = http://127.0.0.1:8080
+
+    #mail
+    email_user = k8sre@qq.com
+    email_passwd = upassword
+    email_host = smtp.exmail.qq.com:25
+    mail_type = html
+    subject = forget_password

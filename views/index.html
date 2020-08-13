@@ -1,0 +1,25 @@
+{{template "base.html" .}}
+
+{{define "container"}}
+    <form method="post" action="" >
+        <div class="form-group">
+            <label for="username">User Name</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Username" />
+        </div>
+        <div class="form-group">
+            <label for="oldPasswd">Password</label>
+            <input type="password" class="form-control" id="oldPasswd" name="oldPasswd" placeholder="Password" />
+        </div>
+        <div class="form-group">
+            <label for="newPasswd">New Password</label>
+            <input type="password" class="form-control" id="newPasswd" name="newPasswd" placeholder="New Password" />
+        </div>
+        <div class="form-group">
+            <label for="verifyPasswd">Verify Password</label>
+            <input type="password" class="form-control" id="verifyPasswd" name="verifyPasswd" placeholder="Verify Password" />
+        </div>
+        <button type="submit" class="btn btn-default" id="button">Submit</input>
+    </form>
+{{end}}
+
+

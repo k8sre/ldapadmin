@@ -1,0 +1,13 @@
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ldapadmin
+spec:
+  rules:
+  - host: ldapadmin.k8sre.com
+    http:
+      paths:
+      - backend:
+          serviceName: ldapadmin
+          servicePort: 80
