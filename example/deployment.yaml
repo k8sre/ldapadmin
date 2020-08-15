@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: ldap
-          image: registry-vpc.cn-zhangjiakou.aliyuncs.com/k8sre/ldapadmin:0.4
+          image: registry-vpc.cn-zhangjiakou.aliyuncs.com/k8sre/ldapadmin:0.6
           ports:
             - containerPort: 8080
               name: web

@@ -3,6 +3,8 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: phpldapadmin
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
 spec:
   rules:
   - host: phpldapadmin.k8sre.com
@@ -10,7 +12,7 @@ spec:
       paths:
       - backend:
           serviceName: phpldapadmin
-          servicePort: 80
+          servicePort: 443
 ---
 apiVersion: v1
 kind: Service
@@ -61,10 +63,13 @@ spec:
             - name: ldap-client-certs
               mountPath: /container/service/ldap-client/assets/certs
           ports:
-            - containerPort: 443
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
           env:
             - name: PHPLDAPADMIN_LDAP_HOSTS
-              value: "#PYTHON2BASH:[{'ldap.k8sre.com': [{'server': [{'tls': 'true'}]}]}]"
+              value: "#PYTHON2BASH:[{'ldap.k8sre.com:636': [{'server': [{'tls': 'true'}]}]}]"
             - name: PHPLDAPADMIN_SERVER_ADMIN
               value: "webmaster@k8sre.com"
             - name: PHPLDAPADMIN_SERVER_PATH
