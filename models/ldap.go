@@ -42,12 +42,12 @@ func (client *Client)Connet()error{
 	ClientInstance.Conn.Start()
 
 	//admin login
-	beego.Info("admin login success ....")
 	err = ClientInstance.Conn.Bind(client.adminDN,client.adminPasswd)
 	if err !=nil{
 		beego.Error("admin login error:",err)
 		return err
 	}
+	beego.Info("admin login success ....")
 	return nil
 }
 
